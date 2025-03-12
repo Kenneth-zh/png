@@ -5,7 +5,7 @@ use std::str::FromStr;
 use crate::{Error, Result};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ChunkType{
+pub struct ChunkType {
     bytes: [u8; 4],
 }
 
@@ -53,7 +53,6 @@ impl TryFrom<[u8; 4]> for ChunkType {
     }
 }
 
-
 impl FromStr for ChunkType {
     type Err = Error;
 
@@ -61,7 +60,7 @@ impl FromStr for ChunkType {
         let bytes = s.as_bytes();
 
         if bytes.len() != 4 {
-            return Error;
+            return Err(Error::from("Invalid length"));
         }
 
         let valid_chars = bytes
@@ -69,7 +68,7 @@ impl FromStr for ChunkType {
             .all(|&b| (b >= b'a' && b <= b'z' || (b >= b'A' && b <= b'Z')));
 
         if !valid_chars {
-            return Error;
+            return Err(Error::from("Invalid characters"));
         }
 
         let sized: [u8; 4] = [bytes[0], bytes[1], bytes[2], bytes[3]];
@@ -83,9 +82,6 @@ impl fmt::Display for ChunkType {
         write!(f, "{}", s)
     }
 }
-
-
-
 
 #[cfg(test)]
 mod tests {
